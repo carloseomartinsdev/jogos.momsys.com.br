@@ -1,11 +1,31 @@
 :root{
-  --bg:#0e0f12; --panel:#171a21; --muted:#9aa4b2; --text:#e5e7eb;
-  --accent:#3b82f6; --warn:#f59e0b; --ok:#22c55e;
-  --sea:#0b1324; --line:#2a2e38;
-  --ship:#64748b; --hit:#ef4444; --miss:#60a5fa; --fog:#111827;
+  /* Base */
+  --bg:#0b0e14; 
+  --panel:#151a22; 
+  --muted:#9aa4b2; 
+  --text:#e7ecf3;
+  --accent:#3b82f6; 
+  --warn:#f59e0b; 
+  --ok:#22c55e;
+  --line:#2b3340;
 
-  --A:#3b82f6; --B:#ef4444; --C:#22c55e; --D:#eab308;
+  /* Tabuleiro & estados (alto contraste) */
+  --sea:#081525;                /* mar mais escuro */
+  --cell-border:#0e223a;        /* grade mais marcada */
+  --ship:#3b4f6a;               /* navio contrastante no mar */
+  --ship-outline:#9fb7d1;       /* contorno sutil do navio */
+  --hit:#ff4747;                /* vermelho mais vivo pra acerto */
+  --miss:#b9ddff;               /* azul claro pra erro */
+  --fog:#0f1826;                /* neblina mais escura */
+
+  /* Cores por jogador (HUD/abas) */
+  --A:#3b82f6; 
+  --B:#ef4444; 
+  --C:#22c55e; 
+  --D:#eab308;
 }
+
+/* ===== layout geral (inalterado) ===== */
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,Segoe UI,Roboto,Arial}
 .app{max-width:1250px;margin:24px auto;padding:0 16px}
@@ -35,6 +55,7 @@ h1{margin:0;font-size:22px}
 .tab.dead{opacity:.45; pointer-events:none}
 .tab.A{border-color:var(--A)} .tab.B{border-color:var(--B)} .tab.C{border-color:var(--C)} .tab.D{border-color:var(--D)}
 
+/* ===== tabuleiro ===== */
 .grid{
   --n:10; /* substituído via style */
   width:100%; aspect-ratio:1/1; background:var(--sea);
@@ -43,20 +64,44 @@ h1{margin:0;font-size:22px}
   overflow:hidden; position:relative;
 }
 .cell{
-  border:1px solid #121620; display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--cell-border);
+  display:flex; align-items:center; justify-content:center;
   font-weight:700; user-select:none; cursor:pointer; position:relative;
 }
-.cell:hover{outline:2px solid #3b82f6aa; outline-offset:-2px}
+.cell:hover{ outline:2px solid #65a3ffcc; outline-offset:-2px }
 
-.own-ship{ background: #223042; }
-.own-hit{ background: var(--hit); color:#fff }
-.own-miss{ background: #1e293b; color:#9aa4b2 }
+/* ===== seu tabuleiro ===== */
+.own-ship{
+  background: var(--ship);
+  box-shadow: inset 0 0 0 1px var(--ship-outline); /* contorno dá definição */
+}
+.own-hit{
+  background: var(--hit); color:#fff;
+  box-shadow: inset 0 0 0 2px #ffffff22;
+}
+.own-miss{
+  /* hatch azul acinzentado para “água atingida” (alto contraste + padrão) */
+  background:
+    repeating-linear-gradient(45deg, #1b2740 0 6px, #213055 6px 12px);
+  color:#c9d7ea;
+}
 
-.opp-fog{ background: var(--fog) }
-.opp-hit{ background: var(--hit); color:#fff }
-.opp-miss{ background: var(--miss); color:#0b1220 }
+/* ===== tabuleiro do oponente (máscara) ===== */
+.opp-fog{ 
+  background: var(--fog);
+}
+.opp-hit{ 
+  background: var(--hit); color:#fff;
+  box-shadow: inset 0 0 0 2px #ffffff22;
+}
+.opp-miss{
+  /* hatch claro para diferenciar do mar e do acerto */
+  background:
+    repeating-linear-gradient(45deg, #d7e9ff 0 6px, #b9ddff 6px 12px);
+  color:#0b1220;
+}
 
-/* Explosão animada */
+/* ===== explosão (acerto) ===== */
 .explosion{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;
 }
@@ -65,14 +110,15 @@ h1{margin:0;font-size:22px}
   width:10%; height:10%; border-radius:50%;
   background: radial-gradient(circle, #fff, #ffd166, #ef4444 60%, transparent 65%);
   animation: boom .6s ease-out forwards;
+  filter: drop-shadow(0 0 6px #ffb347);
 }
 @keyframes boom{
   0%   { transform: scale(0.5); opacity:1; filter:brightness(1.4); }
-  70%  { transform: scale(3.0); opacity:.9; filter:brightness(1.1); }
+  70%  { transform: scale(3.0); opacity:.95; filter:brightness(1.1); }
   100% { transform: scale(5.0); opacity:0; }
 }
 
-/* Chat */
+/* ===== chat ===== */
 .chat .chat-log{height:240px;overflow:auto;background:#0f1117;border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:8px}
 .chat .chat-input{display:flex;gap:8px}
 .chat .chat-input input{flex:1;background:#0f1117;border:1px solid var(--line);border-radius:8px;padding:8px;color:#e5e7eb}
