@@ -1,0 +1,90 @@
+:root{
+  --bg:#0e0f12; --panel:#171a21; --muted:#e1eaf8; --accent:#3b82f6; --warn:#ffa200;
+  --blue:#0062ff; --red:#ff0000; --green:#00ff5e; --yellow:#ffbf00;
+  --edge:#374151; --edge-on:#0073ff; --dot:#e5e7eb;
+  --box-blue:#3b82f633; --box-red:#ef444433; --box-green:#22c55e33; --box-yellow:#eab30833;
+
+  --edge-thick: 18px; /* espessura dos traços */
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#fff;font:14px/1.45 system-ui,Segoe UI,Roboto,Arial}
+.app{max-width:1100px;margin:24px auto;padding:0 16px}
+.topbar{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;margin-bottom:16px}
+h1{margin:0;font-size:22px}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.lbl{opacity:.9}
+.input{background:#0f1117;border:1px solid #2a2e38;color:#fff;padding:8px 10px;border-radius:8px}
+.btn{background:var(--accent);color:#fff;border:0;padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+.btn.warn{background:var(--warn);color:#111}
+.btn:hover{filter:brightness(1.08)}
+.repo{color:#c7d2fe;text-decoration:none;border:1px solid #2a2e38;padding:8px 10px;border-radius:8px}
+.repo:hover{border-color:#3b82f6}
+.score{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.pill{background:var(--panel);border:1px solid #2a2e38;padding:8px 12px;border-radius:999px}
+.pill.azul{border-color:var(--blue)}
+.pill.vermelho{border-color:var(--red)}
+.pill.verde{border-color:var(--green)}
+.pill.amarelo{border-color:var(--yellow)}
+.small{font-size:12px}
+.muted{color:var(--muted)}
+.hideC{display:none}
+.hideD{display:none}
+
+.board-wrap{display:grid;grid-template-columns:1fr 280px;gap:16px}
+.side .card{background:var(--panel);border:1px solid #2a2e38;border-radius:12px;padding:12px;margin-bottom:12px}
+.side h3{margin:0 0 8px}
+.side ul{margin:0 0 10px 18px;color:var(--muted)}
+.log{max-height:320px;overflow:auto;color:var(--muted);font-size:12px}
+
+.board{width:100%;aspect-ratio:1/1;background:#0f1117;border:1px solid #2a2e38;border-radius:12px;position:relative;padding:18px}
+.grid{position:absolute;inset:18px}
+.cell{position:absolute}
+
+/* Pontos: não interceptam clique */
+.dot{
+  width:12px;height:12px;background:var(--dot);
+  border-radius:50%;
+  position:absolute;
+  transform:translate(-50%,-50%);
+  pointer-events: none;
+  z-index: 3;
+  box-shadow:0 0 0 2px #0003;
+}
+
+/* Traços clicáveis em TODA a extensão entre os pontos */
+.edge{
+  position:absolute;
+  background:var(--edge);
+  opacity:.95;
+  cursor:pointer;
+  transition:opacity .12s, background .12s;
+  z-index: 2;
+}
+.edge:hover{ opacity:1 }
+.edge.on{ opacity:1 }
+.edge.block{ pointer-events:none; opacity:.35 }
+
+.edge.h{ height:var(--edge-thick); border-radius:8px }
+.edge.v{ width: var(--edge-thick); border-radius:8px }
+
+/* Cores por dono do traço */
+.edge.on.ownA{ background: var(--blue); }
+.edge.on.ownB{ background: var(--red); }
+.edge.on.ownC{ background: var(--green); }
+.edge.on.ownD{ background: var(--yellow); }
+.edge.on:not(.ownA):not(.ownB):not(.ownC):not(.ownD){ background: var(--edge-on); }
+
+/* Boxes (cor de quem fechou) */
+.box{position:absolute;border-radius:6px;transition:background .15s}
+.box.a{background:var(--box-blue)}
+.box.b{background:var(--box-red)}
+.box.c{background:var(--box-green)}
+.box.d{background:var(--box-yellow)}
+
+/* Destaque de vez */
+.turnA{outline:3px dashed var(--blue);outline-offset:6px}
+.turnB{outline:3px dashed var(--red);outline-offset:6px}
+.turnC{outline:3px dashed var(--green);outline-offset:6px}
+.turnD{outline:3px dashed var(--yellow);outline-offset:6px}
+
+@media (max-width:1000px){ .board-wrap{grid-template-columns:1fr} }

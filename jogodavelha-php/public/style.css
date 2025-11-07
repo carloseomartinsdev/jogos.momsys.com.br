@@ -1,0 +1,80 @@
+:root {
+  --bg: #0f172a;
+  --card: #111827;
+  --muted: #94a3b8;
+  --accent: #22d3ee;
+  --text: #e5e7eb;
+  --danger: #ef4444;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial;
+  background: radial-gradient(1200px 800px at 10% 10%, #0b1224, #0f172a);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+}
+.app {
+  width: 100%;
+  max-width: 520px;
+  background: linear-gradient(180deg, #0f172a, #0d1726);
+  border: 1px solid #1f2937;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.4), inset 0 0 40px rgba(34,211,238,.06);
+}
+h1 { margin: 0 0 12px; }
+.muted { color: var(--muted); margin: 0 0 12px; font-size: 14px; }
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 8px;
+}
+.controls input, .controls button, .bottom button {
+  font: inherit;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #1f2937;
+  background: #0b1222;
+  color: var(--text);
+  outline: none;
+}
+.controls button, .bottom button {
+  background: linear-gradient(180deg, #0b1222, #0c1a2c);
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.controls button:hover, .bottom button:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(34,211,238,.12);
+}
+.status {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.board {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.board button {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  border: 1px solid #1f2937;
+  background: #0b1222;
+  color: var(--text);
+  font-size: 42px;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.board button:disabled { opacity: .65; cursor: not-allowed; }
+.bottom { margin-top: 12px; display: flex; align-items: center; gap: 10px; }
+.msg { color: var(--danger); }

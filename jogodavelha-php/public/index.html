@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jogo da Velha (PHP)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <h1>Jogo da Velha (PHP)</h1>
+    <p class="muted">Multiplayer simples via PHP (polling HTTP). Sem Node/npm.</p>
+
+    <div class="controls">
+      <button id="create">Criar sala</button>
+      <input id="roomCode" placeholder="Código da sala" />
+      <button id="join">Entrar</button>
+    </div>
+
+    <div class="status">
+      <div id="you">Você: -</div>
+      <div id="room">Sala: -</div>
+      <div id="turn">Vez: -</div>
+      <div id="winner"></div>
+    </div>
+
+    <div class="board" id="board">
+      <button data-i="0"></button>
+      <button data-i="1"></button>
+      <button data-i="2"></button>
+      <button data-i="3"></button>
+      <button data-i="4"></button>
+      <button data-i="5"></button>
+      <button data-i="6"></button>
+      <button data-i="7"></button>
+      <button data-i="8"></button>
+    </div>
+
+    <div class="bottom">
+      <button id="reset">Reiniciar</button>
+      <div id="msg" class="msg"></div>
+    </div>
+  </div>
+
+  <script>
+    // clientId persistente para identificar o jogador
+    let clientId = localStorage.getItem('ttt_client_id');
+    if (!clientId) {
+      clientId = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)) + '-' + Date.now();
+      localStorage.setItem('ttt_client_id', clientId);
+    }
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
