@@ -1,0 +1,71 @@
+:root{
+  --bg:#0e0f12; --panel:#171a21; --muted:#9aa4b2; --text:#e5e7eb;
+  --accent:#3b82f6; --accent-2:#22c55e; --border:#2a2e38;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:linear-gradient(180deg,#0e0f12 0%, #0b0c10 100%);
+  color:var(--text); font:16px/1.5 "Inter",system-ui,Segoe UI,Roboto,Arial;
+}
+
+/* Topbar */
+.topbar{
+  max-width:1100px; margin:20px auto 10px; padding:0 16px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.brand{display:flex; align-items:center; gap:10px}
+.brand .logo{font-size:28px}
+.brand h1{margin:0; font-size:22px; letter-spacing:.2px}
+.nav{display:flex; gap:10px; flex-wrap:wrap}
+.nav .link{
+  color:#c7d2fe; text-decoration:none; border:1px solid var(--border);
+  padding:8px 12px; border-radius:10px;
+}
+.nav .link:hover{border-color:var(--accent)}
+
+/* Hero */
+.hero{max-width:1100px; margin:10px auto 30px; padding:0 16px}
+.hero h2{margin:.2em 0 .2em; font-size:28px}
+.subtitle{margin:0 0 18px; color:var(--muted)}
+
+/* Grid de cards */
+.grid{
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;
+}
+.card{
+  background:var(--panel); border:1px solid var(--border); border-radius:16px;
+  padding:18px; text-decoration:none; color:var(--text);
+  display:flex; flex-direction:column; gap:8px; position:relative; overflow:hidden;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.card:hover{
+  transform:translateY(-2px);
+  border-color:#3b82f6aa;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+.icon{font-size:34px}
+.card h3{margin:0; font-size:18px}
+.card p{margin:0; color:var(--muted)}
+.btn{
+  align-self:flex-start; margin-top:10px; background:var(--accent);
+  color:#fff; padding:8px 14px; border-radius:999px; font-weight:600;
+  border:1px solid #0000;
+}
+.card:hover .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+
+/* Footer */
+.footer{
+  max-width:1100px; margin:26px auto; padding:0 16px; color:var(--muted);
+  display:flex; align-items:center; justify-content:center;
+  border-top:1px solid var(--border); padding-top:16px;
+}
+
+/* Responsivo */
+@media (max-width:980px){
+  .grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  .topbar{flex-direction:column; gap:10px; align-items:flex-start}
+  .grid{grid-template-columns:1fr}
+}
