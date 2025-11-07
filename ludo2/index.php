@@ -54,6 +54,7 @@
         <div class="game-controls">
           <button id="btnRoll">Rolar Dado</button>
           <button id="btnRestart">Reiniciar</button>
+          <button onclick="window.testDraw && window.testDraw()">Teste SVG</button>
         </div>
       </div>
 

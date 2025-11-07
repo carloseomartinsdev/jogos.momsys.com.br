@@ -59,6 +59,24 @@ $(function(){
   console.log('btnEntrar:', $('#btnEntrar').length);
   console.log('boardSvg:', $('#boardSvg').length);
   console.log('log:', $('#log').length);
+  
+  // Teste forçado de desenho
+  function testDraw() {
+    console.log('Testando desenho forçado...');
+    console.log('SVG element:', $svg[0]);
+    $svg.empty();
+    $svg.append('<circle cx="50" cy="50" r="5" fill="red" stroke="white" stroke-width="1"/>');
+    $svg.append('<circle cx="20" cy="20" r="3" fill="blue" stroke="yellow" stroke-width="1"/>');
+    $svg.append('<line x1="20" y1="20" x2="50" y2="50" stroke="green" stroke-width="1"/>');
+    console.log('Elementos SVG adicionados:', $svg.children().length);
+    console.log('HTML do SVG:', $svg.html());
+  }
+  
+  // Expor globalmente
+  window.testDraw = testDraw;
+  
+  // Executar teste após 2 segundos
+  setTimeout(testDraw, 2000);
 
   // ===== poll =====
   let pollTimer=null;
