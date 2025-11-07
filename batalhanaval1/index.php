@@ -15,6 +15,7 @@
 <div class="app">
   <header class="topbar">
     <h1>Batalha Naval</h1>
+    <a href="../" class="btn" style="margin-right: 10px;">← Voltar</a>
     <div class="controls">
       <label class="lbl">Tamanho:</label>
       <select id="gridSize" class="input">

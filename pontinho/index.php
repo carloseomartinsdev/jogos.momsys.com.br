@@ -17,6 +17,7 @@
 <div class="app">
   <header class="topbar">
     <h1>Pontinho Online</h1>
+    <a href="../" class="btn" style="margin-right: 10px;">← Voltar</a>
 
     <div class="controls">
       <label class="lbl">Tamanho:</label>

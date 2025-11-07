@@ -13,6 +13,7 @@
   <div class="container">
     <!-- Menu inicial -->
     <div class="menu-section">
+      <a href="../" class="btn" style="margin-bottom: 10px;">← Voltar</a>
       <h1>🎯 Ludo Novo</h1>
       <p>Tabuleiro diferente com novas mecânicas!</p>
       

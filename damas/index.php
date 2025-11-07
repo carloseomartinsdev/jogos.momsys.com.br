@@ -14,13 +14,14 @@
     // Config do backend
     window.CHECKERS_API = 'api.php';
   </script>
-  <script src="game_net.js"></script>
+  <script src="game.js"></script>
 </head>
 <body>
 <div class="container">
   <header class="topbar">
     <h1>Damas Online</h1>
     <div class="right">
+      <a href="../" class="btn" style="margin-right: 10px;">← Voltar</a>
       <button id="btnNovoLocal" class="btn subtle" title="Reinicia apenas localmente (debug)">Reset Local</button>
       <a class="repo" href="#" id="shareLink" target="_blank" rel="noopener">Compartilhar sala</a>
     </div>

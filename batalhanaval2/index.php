@@ -15,6 +15,7 @@
 <div class="app">
   <header class="topbar">
     <h1>Batalha Naval — Mar Global</h1>
+    <a href="../" class="btn" style="margin-right: 10px;">← Voltar</a>
     <div class="controls">
       <span class="pill">Tamanho: <b>20 × 20</b></span>
       <label class="lbl">Jogadores:</label>
