@@ -43,7 +43,7 @@
     </div>
 
     <!-- Jogo -->
-    <div class="game-section">
+    <div class="game-section" style="display: block;">
       <div class="game-header">
         <div class="game-info">
           <span>Sala: <span id="txtRoom">-</span></span>

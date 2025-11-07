@@ -53,6 +53,13 @@ $(function(){
     });
   });
 
+  // Debug: testar se elementos existem
+  console.log('Elementos encontrados:');
+  console.log('btnCriar:', $('#btnCriar').length);
+  console.log('btnEntrar:', $('#btnEntrar').length);
+  console.log('boardSvg:', $('#boardSvg').length);
+  console.log('log:', $('#log').length);
+
   // ===== poll =====
   let pollTimer=null;
   function poll(){
@@ -159,7 +166,12 @@ $(function(){
 
   // ===== desenho do grafo =====
   function drawBoard(){
-    if(!board||!state) return;
+    console.log('drawBoard chamado', {board: !!board, state: !!state});
+    if(!board||!state) {
+      console.log('drawBoard: board ou state não disponível');
+      return;
+    }
+    console.log('Desenhando tabuleiro com', board.nodes?.length, 'nós');
     $svg.empty();
     // edges
     for(const e of board.edges){
