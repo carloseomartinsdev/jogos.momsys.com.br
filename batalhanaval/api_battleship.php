@@ -1,5 +1,5 @@
 <?php
-// Batalha Naval Online (2–4 jogadores) — PHP 7+
+// Batalha Naval Online com Terreno (2–4 joueurs) — PHP 7+
 // Estado salvo em rooms/{CODE}.json
 header('Content-Type: application/json; charset=utf-8');
 
@@ -10,10 +10,11 @@ try{
   $a = isset($_POST['action']) ? $_POST['action'] : '';
   switch($a){
     case 'create': {
-      $size = isset($_POST['size']) ? $_POST['size'] : '10x10';
-      $maxp = isset($_POST['maxp']) ? intval($_POST['maxp']) : 2;
+      $size  = isset($_POST['size']) ? $_POST['size'] : '10x10';
+      $maxp  = isset($_POST['maxp']) ? intval($_POST['maxp']) : 2;
       if($maxp<2||$maxp>4) $maxp=2;
-      respond(action_create($size,$maxp));
+      $landp = isset($_POST['land_pct']) ? floatval($_POST['land_pct']) : null; // ex.: 0.15
+      respond(action_create($size,$maxp,$landp));
     }
     case 'join': {
       respond(action_join(up($_POST,'room')));
@@ -68,21 +69,22 @@ function save_state($room,$st){
 /* ===== Regras ===== */
 function fleet(){ return [5,4,3,3,2]; } // tamanhos padrão
 
-function new_state($rows,$cols,$maxp){
+function new_state($rows,$cols,$maxp,$terrain){
   $letters = ['A','B','C','D'];
   $boards = [];
   $ready = []; $remaining = []; $players=[];
   foreach($letters as $L){ $boards[$L]=array_fill(0,$rows,array_fill(0,$cols,'0')); $ready[$L]=false; $remaining[$L]=0; $players[$L]=null; }
   return [
     'rows'=>$rows,'cols'=>$cols,'max_players'=>$maxp,
+    'terrain'=>$terrain,          // matriz ['W'|'X'] (água|terra)
     'players'=>$players,          // tokens por jogador
     'boards'=>$boards,            // tabuleiros
     'ready'=>$ready,
     'remaining'=>$remaining,      // células de navio restantes por jogador
-    'alive'=>['A'=>false,'B'=>false,'C'=>($maxp>=3?false:false),'D'=>($maxp>=4?false:false)], // será true quando tiver token e >0 navios
+    'alive'=>['A'=>false,'B'=>false,'C'=>($maxp>=3?false:false),'D'=>($maxp>=4?false:false)],
     'alive_order'=>array_slice($letters,0,$maxp),
     'turn'=>'A',
-    'both_ready'=>false,          // (na verdade: todos prontos)
+    'both_ready'=>false,          // (todos prontos)
     'finished'=>false,
     'winner'=>null,
     'version'=>1,
@@ -93,28 +95,77 @@ function new_state($rows,$cols,$maxp){
   ];
 }
 
-function place_random_board($rows,$cols){
+/* ===== Terreno (ilhas) ===== */
+function default_land_pct($rows,$cols,$maxp){
+  // baseia em número de jogadores; tabuleiros maiores ganham um leve bônus
+  $base = ($maxp==2?0.08:($maxp==3?0.12:0.16));
+  if($rows*$cols >= 144) $base += 0.03;      // 12x12+
+  if($rows*$cols >= 196) $base += 0.02;      // 14x14+
+  if($base > 0.25) $base = 0.25;             // limite de segurança
+  return $base;
+}
+
+function generate_terrain($rows,$cols,$maxp,$land_pct=null){
+  $pct = ($land_pct!==null) ? max(0.0, min(0.35, $land_pct)) : default_land_pct($rows,$cols,$maxp);
+  $cells = $rows*$cols;
+  $landCells = (int) round($cells * $pct);
+
+  // inicializa água
+  $t = array_fill(0,$rows, array_fill(0,$cols,'W'));
+
+  // espalha ilhas com leve espaçamento (não perfeito, mas evita blocos enormes)
+  $placed=0; $tries=0;
+  while($placed < $landCells && $tries < $cells*10){
+    $tries++;
+    $r = random_int(0,$rows-1);
+    $c = random_int(0,$cols-1);
+    if($t[$r][$c]==='X') continue;
+
+    // evita borda imediata do tabuleiro para não “trancar” (opcional)
+    // if($r===0||$c===0||$r===$rows-1||$c===$cols-1) continue;
+
+    // espaçamento: evita colocar ilhas adjacentes 4-vizinho com probabilidade
+    $adj = 0;
+    if($r>0   && $t[$r-1][$c]==='X') $adj++;
+    if($r<$rows-1 && $t[$r+1][$c]==='X') $adj++;
+    if($c>0   && $t[$r][$c-1]==='X') $adj++;
+    if($c<$cols-1 && $t[$r][$c+1]==='X') $adj++;
+
+    if($adj>=2 && random_int(0,100)<70) continue; // desestimula clusters grandes
+
+    $t[$r][$c]='X';
+    $placed++;
+  }
+  return $t;
+}
+
+/* ===== Colocação de frotas ===== */
+function place_random_board($rows,$cols,$terrain,$fleetSizes){
   $board = array_fill(0,$rows,array_fill(0,$cols,'0'));
-  foreach(fleet() as $len){
+  foreach($fleetSizes as $len){
     $placed=false; $tries=0;
-    while(!$placed && $tries<300){
+    while(!$placed && $tries<500){
       $tries++;
       $dir = random_int(0,1)==0 ? 'H' : 'V';
       if($dir==='H'){
         $r = random_int(0,$rows-1);
         $c = random_int(0,$cols-$len);
         $ok=true;
-        for($i=0;$i<$len;$i++){ if($board[$r][$c+$i]!=='0'){ $ok=false; break; } }
+        for($i=0;$i<$len;$i++){
+          if($terrain[$r][$c+$i]==='X' || $board[$r][$c+$i]!=='0'){ $ok=false; break; }
+        }
         if($ok){ for($i=0;$i<$len;$i++){ $board[$r][$c+$i]='S'; } $placed=true; }
       }else{
         $r = random_int(0,$rows-$len);
         $c = random_int(0,$cols-1);
         $ok=true;
-        for($i=0;$i<$len;$i++){ if($board[$r+$i][$c]!=='0'){ $ok=false; break; } }
+        for($i=0;$i<$len;$i++){
+          if($terrain[$r+$i][$c]==='X' || $board[$r+$i][$c]!=='0'){ $ok=false; break; }
+        }
         if($ok){ for($i=0;$i<$len;$i++){ $board[$r+$i][$c]='S'; } $placed=true; }
       }
     }
-    if(!$placed) return null;
+    if(!$placed) return null; // falhou posicionar algum navio
   }
   return $board;
 }
@@ -163,6 +214,7 @@ function mask_for_view($st,$me){
   $letters = $st['alive_order'];
   // own completo
   $own = $st['boards'][$me];
+
   // máscaras por alvo
   $oppMasks = [];
   foreach($letters as $L){
@@ -171,6 +223,7 @@ function mask_for_view($st,$me){
     $b = $st['boards'][$L];
     for($r=0;$r<$st['rows'];$r++){
       for($c=0;$c<$st['cols'];$c++){
+        if($st['terrain'][$r][$c]==='X'){ $mask[$r][$c]='X'; continue; } // terreno sempre visível
         if($b[$r][$c]==='H') $mask[$r][$c]='H';
         elseif($b[$r][$c]==='M') $mask[$r][$c]='M';
         else $mask[$r][$c]='?';
@@ -196,19 +249,21 @@ function mask_for_view($st,$me){
       'alive_order'=>$letters,
       'you_ready'=>$st['ready'][$me],
       'own'=>$own,
-      'opp_masks'=>$oppMasks
+      'opp_masks'=>$oppMasks,
+      'terrain'=>$st['terrain'] // enviado ao cliente
     ]
   ];
 }
 
 /* ===== Ações ===== */
-function action_create($size,$maxp){
+function action_create($size,$maxp,$land_pct){
   $p = explode('x', strtolower($size)); $rows=intval($p[0]); $cols=intval($p[1]);
   if($rows<6||$rows>14||$cols<6||$cols>14){ $rows=10; $cols=10; }
 
   $tries=0; do{ $room=randCode(6); $tries++; } while(file_exists(codefile($room)) && $tries<10);
 
-  $st = new_state($rows,$cols,$maxp);
+  $terrain = generate_terrain($rows,$cols,$maxp,$land_pct);
+  $st = new_state($rows,$cols,$maxp,$terrain);
   $tok = randToken(); $st['players']['A']=$tok;
   $st['version']++; $st['updated_at']=time();
 
@@ -270,8 +325,9 @@ function action_place_random($room,$token){
   if(!$me) return ['success'=>false,'error'=>'Jogador não reconhecido'];
   if($st['ready'][$me]) return ['success'=>false,'error'=>'Você já está pronto'];
 
-  $b = place_random_board($st['rows'],$st['cols']);
-  if(!$b) return ['success'=>false,'error'=>'Falha ao posicionar aleatório'];
+  $fleet = fleet();
+  $b = place_random_board($st['rows'],$st['cols'],$st['terrain'],$fleet);
+  if(!$b) return ['success'=>false,'error'=>'Falha ao posicionar aleatório (terreno denso)'];
 
   $st['boards'][$me] = $b;
   $st['remaining'][$me] = count_ships($b);
@@ -306,10 +362,14 @@ function action_shoot($room,$token,$r,$c,$target){
   if(!everyone_ready($st)) return ['success'=>false,'error'=>'Aguardando todos prontos'];
   if($st['finished']) return ['success'=>false,'error'=>'Jogo finalizado'];
   if($st['turn']!==$me) return ['success'=>false,'error'=>'Não é sua vez'];
-  if(!$st['alive'][$target]) return ['success'=>false,'error'=>'Alvo já eliminado'];
 
   $rows=$st['rows']; $cols=$st['cols'];
   if($r<0||$r>=$rows||$c<0||$c>=$cols) return ['success'=>false,'error'=>'Fora do tabuleiro'];
+
+  // bloqueia tiro em terra
+  if($st['terrain'][$r][$c]==='X') return ['success'=>false,'error'=>'Não é possível atirar em terra'];
+
+  if(!$st['alive'][$target]) return ['success'=>false,'error'=>'Alvo já eliminado'];
 
   $cell = $st['boards'][$target][$r][$c];
   if($cell==='H' || $cell==='M') return ['success'=>false,'error'=>'Já atirado aqui'];
@@ -348,9 +408,11 @@ function action_restart($room,$token){
   if(!$me) return ['success'=>false,'error'=>'Jogador não reconhecido'];
 
   $rows=$st['rows']; $cols=$st['cols']; $maxp=$st['max_players'];
+  // preserva o mesmo terreno da sala
+  $terrain=$st['terrain'];
   $players=$st['players'];
 
-  $st = new_state($rows,$cols,$maxp);
+  $st = new_state($rows,$cols,$maxp,$terrain);
   $st['players']=$players; // mantém tokens conectados
   $st['version']++; $st['updated_at']=time();
   save_state($room,$st);
@@ -371,10 +433,9 @@ function action_chat_send($room,$token,$text){
   $id = $st['chat_last_id'] + 1;
   $msg = ['id'=>$id, 'who'=>$me, 'text'=>$text, 'ts'=>time()];
   $st['chat'][] = $msg;
-  // limita a 200 mensagens
   if(count($st['chat'])>200){ $st['chat'] = array_slice($st['chat'], -200); }
   $st['chat_last_id'] = $id;
-  $st['version']++; // opcional: pode ou não versionar com chat; aqui versiona
+  $st['version']++; // versiona junto
   $st['updated_at']=time();
   save_state($room,$st);
 

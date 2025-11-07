@@ -3,7 +3,7 @@ $(function(){
 
   let rows = 10, cols = 10;
   let room = null, token = null, me = null, version = 0, chatLastId = 0;
-  let state = null; // visão do cliente
+  let state = null; // visão do cliente (inclui terrain)
 
   // alvo atual (oponente selecionado para atirar)
   let target = null;
@@ -33,7 +33,8 @@ $(function(){
     const size = ($('#gridSize').val()||'10x10').split('x').map(Number);
     const maxp = parseInt($('#playersCount').val(),10) || 2;
     rows = size[0]; cols = size[1];
-    api({action:'create', size: rows+'x'+cols, maxp}).done(res=>{
+    // opcional: você pode passar land_pct (0–0.35). Ex.: land_pct: 0.15
+    api({action:'create', size: rows+'x'+cols, maxp /*, land_pct:0.15 */}).done(res=>{
       if(!res.success){ alert(res.error||'Falha ao criar'); return; }
       room=res.room; token=res.token; me=res.you_side; version=res.state.version||0; state=res.state;
       chatLastId = res.last_chat_id || 0;
@@ -132,7 +133,6 @@ $(function(){
     if(!text || !room || !token) return;
     api({action:'chat_send', room, token, text}).done(res=>{
       if(res && res.success){
-        // mensagens virão no próximo poll; mas já ecoamos localmente:
         if(Array.isArray(res.chat) && res.chat.length){
           appendChat(res.chat);
           chatLastId = res.chat[res.chat.length-1].id;
@@ -170,6 +170,12 @@ $(function(){
       const i = +$(this).data('i');
       const r = Math.floor(i/cols), c = i%cols;
 
+      // bloqueia clique em terreno terra (já visível no mask)
+      if(state.terrain && state.terrain[r] && state.terrain[r][c] === 'X'){
+        log('Não é possível atirar em terra.');
+        return;
+      }
+
       api({action:'shoot', room, token, r, c, target}).done(res=>{
         if(!res.success){
           if(res.error) log('Falha: '+res.error);
@@ -180,7 +186,6 @@ $(function(){
         state=res.state; version=state.version;
         buildBoards();
         buildOpponentTabs();
-        // se houve acerto na célula atual, explode:
         tryAnimateHit(prevOppMask, state.opp_masks[target], r, c);
       });
     });
@@ -215,13 +220,22 @@ $(function(){
     if(!state) return;
     updateHUD();
 
-    // YOUR board (completo)
+    // YOUR board (com terreno)
     if($own.children().length !== rows*cols){ gridEl($own, rows); }
     $own.find('.cell').each(function(){
       const i = +$(this).data('i');
       const r = Math.floor(i/rows), c = i%rows;
-      const v = state.own[r][c]; // 'S','H','M','0'
       this.className = 'cell';
+
+      // terreno
+      if(state.terrain && state.terrain[r] && state.terrain[r][c]==='X'){
+        this.classList.add('terrain-land');
+        this.style.cursor = 'not-allowed';
+        return; // nada além de terreno no seu tabuleiro
+      }
+
+      // estados do próprio tabuleiro
+      const v = state.own[r][c]; // 'S','H','M','0'
       if(v==='S') this.classList.add('own-ship');
       if(v==='H') this.classList.add('own-hit');
       if(v==='M') this.classList.add('own-miss');
@@ -229,7 +243,6 @@ $(function(){
 
     // OPP board da aba selecionada (máscara por alvo)
     if(!target){
-      // auto-seleciona primeiro vivo diferente de mim
       const order = state.alive_order || [];
       for(const l of order){ if(l!==me && state.alive[l]){ target = l; break; } }
     }
@@ -239,12 +252,20 @@ $(function(){
   function renderOppBoard(){
     if(!state || !target) { $opp.empty(); return; }
     if($opp.children().length !== cols*rows){ gridEl($opp, cols); }
-    const mask = state.opp_masks[target]; // 'H','M','?'
+    const mask = state.opp_masks[target]; // 'H','M','?' ou 'X' (terra)
     $opp.find('.cell').each(function(){
       const i = +$(this).data('i');
       const r = Math.floor(i/cols), c = i%cols;
-      const v = mask[r][c];
       this.className = 'cell';
+
+      // terreno terra sempre visível
+      if(state.terrain && state.terrain[r] && state.terrain[r][c]==='X'){
+        this.classList.add('terrain-land');
+        this.style.cursor = 'not-allowed';
+        return;
+      }
+
+      const v = mask[r][c];
       if(v==='H') this.classList.add('opp-hit');
       else if(v==='M') this.classList.add('opp-miss');
       else this.classList.add('opp-fog');

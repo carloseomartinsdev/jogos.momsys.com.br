@@ -14,9 +14,13 @@
   --cell-border:#0e223a;        /* grade mais marcada */
   --ship:#3b4f6a;               /* navio contrastante no mar */
   --ship-outline:#9fb7d1;       /* contorno sutil do navio */
-  --hit:#ff4747;                /* vermelho mais vivo pra acerto */
+  --hit:#ff4747;                /* vermelho vivo pra acerto */
   --miss:#b9ddff;               /* azul claro pra erro */
-  --fog:#0f1826;                /* neblina mais escura */
+  --fog:#0f1826;                /* neblina */
+
+  /* Terreno (ilhas/terra) */
+  --land:#2c3320;
+  --land-stroke:#5c7a3a;
 
   /* Cores por jogador (HUD/abas) */
   --A:#3b82f6; 
@@ -25,7 +29,7 @@
   --D:#eab308;
 }
 
-/* ===== layout geral (inalterado) ===== */
+/* ===== layout geral ===== */
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,Segoe UI,Roboto,Arial}
 .app{max-width:1250px;margin:24px auto;padding:0 16px}
@@ -70,32 +74,37 @@ h1{margin:0;font-size:22px}
 }
 .cell:hover{ outline:2px solid #65a3ffcc; outline-offset:-2px }
 
+/* ===== terreno (ilhas) ===== */
+.terrain-land{
+  background:
+    linear-gradient(0deg, #00000020, #00000020),
+    repeating-linear-gradient(45deg, #323c26 0 10px, #2c3320 10px 20px);
+  box-shadow: inset 0 0 0 2px var(--land-stroke);
+  cursor:not-allowed;
+}
+
 /* ===== seu tabuleiro ===== */
 .own-ship{
   background: var(--ship);
-  box-shadow: inset 0 0 0 1px var(--ship-outline); /* contorno dá definição */
+  box-shadow: inset 0 0 0 1px var(--ship-outline);
 }
 .own-hit{
   background: var(--hit); color:#fff;
   box-shadow: inset 0 0 0 2px #ffffff22;
 }
 .own-miss{
-  /* hatch azul acinzentado para “água atingida” (alto contraste + padrão) */
   background:
     repeating-linear-gradient(45deg, #1b2740 0 6px, #213055 6px 12px);
   color:#c9d7ea;
 }
 
 /* ===== tabuleiro do oponente (máscara) ===== */
-.opp-fog{ 
-  background: var(--fog);
-}
+.opp-fog{ background: var(--fog); }
 .opp-hit{ 
   background: var(--hit); color:#fff;
   box-shadow: inset 0 0 0 2px #ffffff22;
 }
 .opp-miss{
-  /* hatch claro para diferenciar do mar e do acerto */
   background:
     repeating-linear-gradient(45deg, #d7e9ff 0 6px, #b9ddff 6px 12px);
   color:#0b1220;
@@ -121,7 +130,7 @@ h1{margin:0;font-size:22px}
 /* ===== chat ===== */
 .chat .chat-log{height:240px;overflow:auto;background:#0f1117;border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:8px}
 .chat .chat-input{display:flex;gap:8px}
-.chat .chat-input input{flex:1;background:#0f1117;border:1px solid var(--line);border-radius:8px;padding:8px;color:#e5e7eb}
+.chat .chat-input input{flex:1;background:#0f1117;border:1px solid var(--line);border-radius:8px;padding:8px;color:#e7ecf3}
 
 .side .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
 .log{max-height:240px;overflow:auto;color:var(--muted);font-size:12px}
