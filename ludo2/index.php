@@ -60,7 +60,11 @@
 
       <div class="game-content">
         <div class="board-area">
-          <svg id="boardSvg" width="500" height="500" viewBox="0 0 100 100" style="border: 2px solid red;"></svg>
+          <svg id="boardSvg" width="500" height="500" viewBox="0 0 100 100" style="border: 2px solid red;">
+            <circle cx="50" cy="50" r="8" fill="red" stroke="white" stroke-width="2"/>
+            <circle cx="20" cy="20" r="6" fill="blue" stroke="yellow" stroke-width="2"/>
+            <line x1="20" y1="20" x2="50" y2="50" stroke="green" stroke-width="3"/>
+          </svg>
         </div>
         
         <div class="sidebar">
