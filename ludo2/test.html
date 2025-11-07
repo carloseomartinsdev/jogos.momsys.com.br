@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Teste Ludo</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #222; color: white; }
+    #boardSvg { border: 1px solid #666; background: #111; }
+    button { padding: 10px; margin: 5px; }
+    .log { background: #333; padding: 10px; margin: 10px 0; max-height: 200px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <h1>Teste Ludo API</h1>
+  
+  <button onclick="testCreate()">Criar Jogo</button>
+  <button onclick="testBoard()">Testar Tabuleiro</button>
+  
+  <div class="log" id="log"></div>
+  
+  <svg id="boardSvg" width="500" height="500" viewBox="0 0 100 100"></svg>
+
+  <script>
+    function log(msg) {
+      $('#log').append('<div>' + new Date().toLocaleTimeString() + ': ' + msg + '</div>');
+      $('#log').scrollTop($('#log')[0].scrollHeight);
+    }
+
+    function testCreate() {
+      log('Testando criação de jogo...');
+      $.ajax({
+        url: 'api_ludo.php',
+        method: 'POST',
+        data: { action: 'create', board: 'oito', maxp: 2 },
+        dataType: 'json'
+      }).done(function(res) {
+        log('Resposta: ' + JSON.stringify(res, null, 2));
+        if (res.success && res.board) {
+          drawTestBoard(res.board);
+        }
+      }).fail(function(xhr, status, error) {
+        log('Erro: ' + error + ' - Status: ' + status);
+        log('Response: ' + xhr.responseText);
+      });
+    }
+
+    function testBoard() {
+      log('Testando carregamento direto do tabuleiro...');
+      $.ajax({
+        url: 'boards/oito.json',
+        method: 'GET',
+        dataType: 'json'
+      }).done(function(board) {
+        log('Tabuleiro carregado: ' + board.nodes.length + ' nós');
+        drawTestBoard(board);
+      }).fail(function(xhr, status, error) {
+        log('Erro ao carregar tabuleiro: ' + error);
+      });
+    }
+
+    function drawTestBoard(board) {
+      log('Desenhando tabuleiro...');
+      const $svg = $('#boardSvg');
+      $svg.empty();
+
+      // Desenhar nós
+      if (board.nodes) {
+        board.nodes.forEach(function(node) {
+          const circle = $('<circle>')
+            .attr('cx', node.x)
+            .attr('cy', node.y)
+            .attr('r', 2)
+            .attr('fill', '#4CAF50')
+            .attr('stroke', '#fff')
+            .attr('stroke-width', 0.5);
+          $svg.append(circle);
+
+          if (node.label) {
+            const text = $('<text>')
+              .attr('x', node.x)
+              .attr('y', node.y + 1)
+              .attr('text-anchor', 'middle')
+              .attr('font-size', '2px')
+              .attr('fill', '#fff')
+              .text(node.label);
+            $svg.append(text);
+          }
+        });
+        log('Desenhados ' + board.nodes.length + ' nós');
+      }
+
+      // Desenhar arestas
+      if (board.edges) {
+        board.edges.forEach(function(edge) {
+          const nodeA = board.nodes.find(n => n.id === edge.a);
+          const nodeB = board.nodes.find(n => n.id === edge.b);
+          if (nodeA && nodeB) {
+            const line = $('<line>')
+              .attr('x1', nodeA.x)
+              .attr('y1', nodeA.y)
+              .attr('x2', nodeB.x)
+              .attr('y2', nodeB.y)
+              .attr('stroke', '#666')
+              .attr('stroke-width', 0.5);
+            $svg.append(line);
+          }
+        });
+        log('Desenhadas ' + board.edges.length + ' arestas');
+      }
+    }
+
+    $(document).ready(function() {
+      log('jQuery carregado, página pronta');
+    });
+  </script>
+</body>
+</html>
