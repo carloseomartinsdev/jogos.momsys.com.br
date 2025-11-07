@@ -7,6 +7,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Damas Online (PHP)</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="icon" href="../images/icone.ico" type="image/x-icon">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script>
     // Config do backend

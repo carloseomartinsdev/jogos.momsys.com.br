@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css" />
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" href="images/icone.ico" type="image/x-icon">
 </head>
 <body>
   <header class="topbar">

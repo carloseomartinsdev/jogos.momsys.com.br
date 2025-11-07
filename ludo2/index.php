@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Ludo Novo • Jogo</title>
   <link rel="stylesheet" href="styles_new.css" />
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="icon" href="../images/icone.ico" type="image/x-icon">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>

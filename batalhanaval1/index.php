@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Batalha Naval Online (2–4 jogadores)</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="icon" href="../images/icone.ico" type="image/x-icon">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script>window.BS_API = 'api_battleship.php';</script>
   <script src="battleship.js"></script>
