@@ -18,7 +18,10 @@
       <a class="link" href="./jogodavelha/">Jogo da Velha</a>
       <a class="link" href="./damas/">Damas</a>
       <a class="link" href="./pontinho/">Pontinho</a>
-      <a class="link" href="./batalhanaval/">Batalha Naval</a>
+      <a class="link" href="./batalhanaval/">Batalha Naval 1</a>
+      <a class="link" href="./batalhanaval2/">Batalha Naval 2</a>
+      <a class="link" href="./ludo/">Ludo Clássico</a>
+      <a class="link" href="./ludo2/">Ludo Novo</a>
     </nav>
   </header>
 
@@ -50,8 +53,29 @@
 
       <a class="card" href="./batalhanaval/">
         <div class="icon">🚢</div>
-        <h3>Batalha Naval</h3>
+        <h3>Batalha Naval 1</h3>
         <p>Posicione seus navios e afunde a frota inimiga!</p>
+        <span class="btn">Jogar</span>
+      </a>
+
+      <a class="card" href="./batalhanaval2/">
+        <div class="icon">⚓</div>
+        <h3>Batalha Naval 2</h3>
+        <p>Nova versão do clássico jogo naval com melhorias!</p>
+        <span class="btn">Jogar</span>
+      </a>
+
+      <a class="card" href="./ludo/">
+        <div class="icon">🎲</div>
+        <h3>Ludo Clássico</h3>
+        <p>O tradicional jogo de tabuleiro para até 4 jogadores!</p>
+        <span class="btn">Jogar</span>
+      </a>
+
+      <a class="card" href="./ludo2/">
+        <div class="icon">🎯</div>
+        <h3>Ludo Novo</h3>
+        <p>Ludo com tabuleiro diferente e novas mecânicas!</p>
         <span class="btn">Jogar</span>
       </a>
     </section>

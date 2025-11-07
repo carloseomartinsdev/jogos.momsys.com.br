@@ -1,0 +1,70 @@
+:root{
+  --bg:#0b0e14; --panel:#151a22; --line:#2b3340; --text:#e7ecf3;
+  --muted:#9aa4b2; --accent:#3b82f6; --ok:#22c55e; --warn:#f59e0b;
+
+  /* cores dos jogadores */
+  --A:#3b82f6; --B:#ef4444; --C:#22c55e; --D:#eab308;
+
+  /* nós */
+  --node:#e5e7eb; --node-safe:#a7f3d0; --node-portal:#facc15;
+  --edge:#6b7280; --edge-portal:#f59e0b;
+  --highlight:#60a5fa;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,Segoe UI,Roboto,Arial}
+.app{max-width:1250px;margin:24px auto;padding:0 16px}
+.topbar{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-bottom:16px}
+h1{margin:0;font-size:22px}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.lbl{opacity:.9}
+.input{background:#0f1117;border:1px solid var(--line);color:#fff;padding:8px 10px;border-radius:8px}
+.btn{background:var(--accent);color:#fff;border:0;padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+.btn.ok{background:var(--ok)}
+.btn.warn{background:var(--warn);color:#111}
+.btn:hover{filter:brightness(1.08)}
+.repo{color:#c7d2fe;text-decoration:none;border:1px solid var(--line);padding:8px 10px;border-radius:8px}
+.score{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.pill{background:var(--panel);border:1px solid var(--line);padding:8px 12px;border-radius:999px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+
+.wrap{display:grid;grid-template-columns:1fr 360px;gap:16px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+.panel h3{margin:0 0 8px}
+.actions{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+
+.boardBox{background:#0f1117;border:1px solid var(--line);border-radius:12px;padding:6px}
+#boardSvg{width:100%;height:min(66vh,700px);display:block;background:#0c111a;border-radius:10px}
+
+/* edges */
+.edge{stroke:var(--edge);stroke-width:0.6;opacity:0.9}
+.edge.portal{stroke:var(--edge-portal);stroke-dasharray:1.2 1.2}
+
+/* nodes */
+.node circle{fill:var(--node);stroke:#1f2937;stroke-width:0.6}
+.node.safe circle{fill:var(--node-safe)}
+.node.portal circle{fill:var(--node-portal)}
+.node.startA circle{stroke:var(--A);stroke-width:1.1}
+.node.startB circle{stroke:var(--B);stroke-width:1.1}
+.node.startC circle{stroke:var(--C);stroke-width:1.1}
+.node.startD circle{stroke:var(--D);stroke-width:1.1}
+
+.node text{font-size:2.8px;fill:#111;opacity:.8}
+
+/* possíveis destinos */
+.dest circle{stroke:var(--highlight);stroke-width:1.6;fill:none}
+
+/* peças */
+.piece{stroke:#111;stroke-width:0.4}
+.piece.A{fill:var(--A)} .piece.B{fill:var(--B)} .piece.C{fill:var(--C)} .piece.D{fill:var(--D)}
+.piece.shadow{opacity:.38}
+
+.side .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.chat .chat-log{height:240px;overflow:auto;background:#0f1117;border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:8px}
+.chat .chat-input{display:flex;gap:8px}
+.chat .chat-input input{flex:1;background:#0f1117;border:1px solid var(--line);border-radius:8px;padding:8px;color:#e7ecf3}
+
+.log{max-height:220px;overflow:auto;color:var(--muted);font-size:12px}
+
+@media (max-width:1100px){ .wrap{grid-template-columns:1fr} #boardSvg{height:62vh} }

@@ -1,0 +1,68 @@
+{
+  "name": "oito",
+  "nodes": [
+    {"id":"N1","x":20,"y":50,"type":"segura","edges":["N2"],"label":"★"},
+    {"id":"N2","x":28,"y":40,"type":"normal","edges":["N3"]},
+    {"id":"N3","x":36,"y":35,"type":"ponte","edges":["N4"],"to":"N9","label":"⤴"},
+    {"id":"N4","x":44,"y":40,"type":"normal","edges":["N5"]},
+    {"id":"N5","x":50,"y":50,"type":"segura","edges":["N6"],"label":"★"},
+    {"id":"N6","x":44,"y":60,"type":"normal","edges":["N7"]},
+    {"id":"N7","x":36,"y":65,"type":"normal","edges":["N8"]},
+    {"id":"N8","x":28,"y":60,"type":"normal","edges":["N1"]},
+
+    {"id":"N9","x":64,"y":35,"type":"ponte","edges":["N10"],"to":"N3","label":"⤵"},
+    {"id":"N10","x":72,"y":40,"type":"normal","edges":["N11"]},
+    {"id":"N11","x":80,"y":50,"type":"segura","edges":["N12"],"label":"★"},
+    {"id":"N12","x":72,"y":60,"type":"normal","edges":["N13"]},
+    {"id":"N13","x":64,"y":65,"type":"normal","edges":["N14"]},
+    {"id":"N14","x":56,"y":60,"type":"normal","edges":["N5"]},
+
+    {"id":"A_INI","x":18,"y":50,"type":"inicio:A","edges":["N1"],"label":"A"},
+    {"id":"B_INI","x":82,"y":50,"type":"inicio:B","edges":["N11"],"label":"B"},
+    {"id":"C_INI","x":50,"y":18,"type":"inicio:C","edges":["N9"],"label":"C"},
+    {"id":"D_INI","x":50,"y":82,"type":"inicio:D","edges":["N6"],"label":"D"},
+
+    {"id":"H_A1","x":10,"y":40,"type":"home","edges":["H_A2"]},
+    {"id":"H_A2","x":10,"y":50,"type":"home","edges":["H_A3"]},
+    {"id":"H_A3","x":10,"y":60,"type":"home","edges":["H_A4"]},
+    {"id":"H_A4","x":10,"y":70,"type":"meta:A","edges":[],"label":"META A"},
+
+    {"id":"H_B1","x":90,"y":60,"type":"home","edges":["H_B2"]},
+    {"id":"H_B2","x":90,"y":50,"type":"home","edges":["H_B3"]},
+    {"id":"H_B3","x":90,"y":40,"type":"home","edges":["H_B4"]},
+    {"id":"H_B4","x":90,"y":30,"type":"meta:B","edges":[],"label":"META B"},
+
+    {"id":"H_C1","x":60,"y":10,"type":"home","edges":["H_C2"]},
+    {"id":"H_C2","x":50,"y":10,"type":"home","edges":["H_C3"]},
+    {"id":"H_C3","x":40,"y":10,"type":"home","edges":["H_C4"]},
+    {"id":"H_C4","x":30,"y":10,"type":"meta:C","edges":[],"label":"META C"},
+
+    {"id":"H_D1","x":40,"y":90,"type":"home","edges":["H_D2"]},
+    {"id":"H_D2","x":50,"y":90,"type":"home","edges":["H_D3"]},
+    {"id":"H_D3","x":60,"y":90,"type":"home","edges":["H_D4"]},
+    {"id":"H_D4","x":70,"y":90,"type":"meta:D","edges":[],"label":"META D"}
+  ],
+  "edges": [
+    {"a":"A_INI","b":"N1"},{"a":"B_INI","b":"N11"},{"a":"C_INI","b":"N9"},{"a":"D_INI","b":"N6"},
+    {"a":"N1","b":"N2"},{"a":"N2","b":"N3"},{"a":"N3","b":"N4"},{"a":"N4","b":"N5"},{"a":"N5","b":"N6"},
+    {"a":"N6","b":"N7"},{"a":"N7","b":"N8"},{"a":"N8","b":"N1"},
+    {"a":"N9","b":"N10"},{"a":"N10","b":"N11"},{"a":"N11","b":"N12"},{"a":"N12","b":"N13"},{"a":"N13","b":"N14"},{"a":"N14","b":"N5"},
+    {"a":"H_A1","b":"H_A2"},{"a":"H_A2","b":"H_A3"},{"a":"H_A3","b":"H_A4"},
+    {"a":"H_B1","b":"H_B2"},{"a":"H_B2","b":"H_B3"},{"a":"H_B3","b":"H_B4"},
+    {"a":"H_C1","b":"H_C2"},{"a":"H_C2","b":"H_C3"},{"a":"H_C3","b":"H_C4"},
+    {"a":"H_D1","b":"H_D2"},{"a":"H_D2","b":"H_D3"},{"a":"H_D3","b":"H_D4"}
+  ],
+  "homeEntrances": { "A": "N1", "B":"N11", "C":"N9", "D":"N6" },
+  "homePaths": {
+    "A": ["H_A1","H_A2","H_A3","H_A4"],
+    "B": ["H_B1","H_B2","H_B3","H_B4"],
+    "C": ["H_C1","H_C2","H_C3","H_C4"],
+    "D": ["H_D1","H_D2","H_D3","H_D4"]
+  },
+  "startBases": {
+    "A": {"x":8,"y":88}, "B":{"x":92,"y":12}, "C":{"x":12,"y":12}, "D":{"x":88,"y":88}
+  },
+  "metaNodes": {
+    "A": {"x":10,"y":70}, "B":{"x":90,"y":30}, "C":{"x":30,"y":10}, "D":{"x":70,"y":90}
+  }
+}
