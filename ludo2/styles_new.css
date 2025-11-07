@@ -230,61 +230,62 @@ button:hover {
 
 /* SVG Styles */
 .edge {
-  stroke: #8b9dc3;
-  stroke-width: 0.8;
-  opacity: 0.9;
+  stroke: #ffffff;
+  stroke-width: 1;
+  opacity: 0.7;
 }
 
 .edge.portal {
-  stroke: var(--edge-portal);
-  stroke-dasharray: 1.2 1.2;
-  stroke-width: 1.0;
+  stroke: #ff6b35;
+  stroke-dasharray: 2 2;
+  stroke-width: 1.2;
 }
 
 .node circle {
-  fill: #e5e7eb;
-  stroke: #374151;
-  stroke-width: 0.8;
+  fill: #ffffff;
+  stroke: #000000;
+  stroke-width: 1;
 }
 
 .node.safe circle {
-  fill: #a7f3d0;
-  stroke: #059669;
+  fill: #00ff00;
+  stroke: #000000;
+  stroke-width: 1;
 }
 
 .node.portal circle {
-  fill: #facc15;
-  stroke: #d97706;
+  fill: #ffff00;
+  stroke: #000000;
+  stroke-width: 1;
 }
 
 .node.startA circle {
-  fill: #dbeafe;
-  stroke: var(--A);
-  stroke-width: 1.5;
+  fill: #3b82f6;
+  stroke: #ffffff;
+  stroke-width: 2;
 }
 
 .node.startB circle {
-  fill: #fee2e2;
-  stroke: var(--B);
-  stroke-width: 1.5;
+  fill: #ef4444;
+  stroke: #ffffff;
+  stroke-width: 2;
 }
 
 .node.startC circle {
-  fill: #dcfce7;
-  stroke: var(--C);
-  stroke-width: 1.5;
+  fill: #22c55e;
+  stroke: #ffffff;
+  stroke-width: 2;
 }
 
 .node.startD circle {
-  fill: #fef3c7;
-  stroke: var(--D);
-  stroke-width: 1.5;
+  fill: #eab308;
+  stroke: #ffffff;
+  stroke-width: 2;
 }
 
 .node text {
-  font-size: 2.8px;
-  fill: #1f2937;
-  opacity: 1;
+  font-size: 3px;
+  fill: #000000;
   font-weight: bold;
 }
 
