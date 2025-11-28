@@ -17,12 +17,12 @@
       <h1>Jogos</h1>
     </div>
     <nav class="nav">
-      <a class="link" href="./jogodavelha/">Jogo da Velha</a>
-      <a class="link" href="./damas/">Damas</a>
+      <a class="link" href="./jogodavelha/public/">Jogo da Velha</a>
+      <a class="link" href="./damos/">Damas</a>
       <a class="link" href="./pontinho/">Pontinho</a>
-      <a class="link" href="./batalhanaval/">Batalha Naval 1</a>
+      <a class="link" href="./batalhanaval1/">Batalha Naval 1</a>
       <a class="link" href="./batalhanaval2/">Batalha Naval 2</a>
-      <a class="link" href="./ludo/">Ludo Clássico</a>
+      <a class="link" href="./ludoclassico/">Ludo Clássico</a>
       <a class="link" href="./ludo2/">Ludo Novo</a>
     </nav>
   </header>
@@ -32,14 +32,14 @@
     <p class="subtitle">Divirta-se com jogos clássicos direto no navegador.</p>
 
     <section class="grid">
-      <a class="card" href="./jogodavelha/">
+      <a class="card" href="./jogodavelha/public/">
         <div class="icon">#️⃣</div>
         <h3>Jogo da Velha</h3>
         <p>Desafie um amigo ou pratique estratégias nesse clássico 3×3.</p>
         <span class="btn">Jogar</span>
       </a>
 
-      <a class="card" href="./damas/">
+      <a class="card" href="./damos/">
         <div class="icon">♟️</div>
         <h3>Damas (Online)</h3>
         <p>Crie uma sala e jogue contra outra pessoa pela internet.</p>
@@ -53,7 +53,7 @@
         <span class="btn">Jogar</span>
       </a>
 
-      <a class="card" href="./batalhanaval/">
+      <a class="card" href="./batalhanaval1/">
         <div class="icon">🚢</div>
         <h3>Batalha Naval 1</h3>
         <p>Posicione seus navios e afunde a frota inimiga!</p>
@@ -67,7 +67,7 @@
         <span class="btn">Jogar</span>
       </a>
 
-      <a class="card" href="./ludo/">
+      <a class="card" href="./ludoclassico/">
         <div class="icon">🎲</div>
         <h3>Ludo Clássico</h3>
         <p>O tradicional jogo de tabuleiro para até 4 jogadores!</p>
