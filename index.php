@@ -18,9 +18,9 @@
     </div>
     <nav class="nav">
       <a class="link" href="./jogodavelha/public/">Jogo da Velha</a>
-      <a class="link" href="./damos/">Damas</a>
+      <a class="link" href="./damas/">Damas</a>
       <a class="link" href="./pontinho/">Pontinho</a>
-      <a class="link" href="./batalhanaval1/">Batalha Naval 1</a>
+      <a class="link" href="./batalhanaval/">Batalha Naval 1</a>
       <a class="link" href="./batalhanaval2/">Batalha Naval 2</a>
       <a class="link" href="./ludoclassico/">Ludo Clássico</a>
       <a class="link" href="./ludo2/">Ludo Novo</a>
