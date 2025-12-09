@@ -39,7 +39,7 @@
         <span class="btn">Jogar</span>
       </a>
 
-      <a class="card" href="./damos/">
+      <a class="card" href="./damas/">
         <div class="icon">♟️</div>
         <h3>Damas (Online)</h3>
         <p>Crie uma sala e jogue contra outra pessoa pela internet.</p>
