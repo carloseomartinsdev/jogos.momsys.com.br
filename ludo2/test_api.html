@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teste API Ludo</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h1>Teste API Ludo</h1>
+  <button id="testCreate">Testar Create</button>
+  <pre id="result"></pre>
+
+  <script>
+    $('#testCreate').on('click', function() {
+      console.log('Testando API...');
+      $.ajax({
+        url: 'api_ludo.php',
+        method: 'POST',
+        data: {action: 'create', board: 'oito', maxp: 2},
+        dataType: 'json'
+      }).done(function(res) {
+        console.log('Resposta:', res);
+        $('#result').text(JSON.stringify(res, null, 2));
+      }).fail(function(xhr, status, error) {
+        console.error('Erro:', error);
+        $('#result').text('ERRO: ' + error + '\n' + xhr.responseText);
+      });
+    });
+  </script>
+</body>
+</html>
