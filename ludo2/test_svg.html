@@ -1,32 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Teste SVG</title>
-    <style>
-        body { background: #1a1f2e; padding: 20px; }
-        #test-svg { border: 2px solid red; background: #1a1f2e; }
-    </style>
+  <meta charset="utf-8" />
+  <title>Teste SVG Ludo</title>
+  <style>
+    body { margin: 20px; background: #0b0e14; color: white; font-family: Arial; }
+    #boardSvg {
+      width: 600px;
+      height: 600px;
+      background: #1a1f2e;
+      border: 2px solid #2b3340;
+      display: block;
+    }
+    .edge { stroke: #6b7280; stroke-width: 0.4; }
+    .node circle { fill: #e5e7eb; stroke: #374151; stroke-width: 0.3; }
+    .piece { stroke: rgba(0,0,0,0.4); stroke-width: 0.4; }
+    .piece.A { fill: #3b82f6; }
+  </style>
 </head>
 <body>
-    <h1 style="color: white;">Teste SVG</h1>
+  <h1>Teste SVG Direto</h1>
+  <p>Se você vê círculos e linhas abaixo, o SVG está funcionando:</p>
+  
+  <svg id="boardSvg" viewBox="0 0 100 100">
+    <!-- Teste básico -->
+    <circle cx="50" cy="50" r="5" fill="red" stroke="white" stroke-width="0.5"/>
+    <circle cx="20" cy="20" r="3" fill="blue" stroke="white" stroke-width="0.3"/>
+    <circle cx="80" cy="80" r="3" fill="green" stroke="white" stroke-width="0.3"/>
+    <line x1="20" y1="20" x2="80" y2="80" stroke="yellow" stroke-width="0.5"/>
     
-    <svg id="test-svg" width="500" height="500" viewBox="0 0 100 100">
-        <!-- Teste básico -->
-        <circle cx="50" cy="50" r="5" fill="red" stroke="white" stroke-width="1"/>
-        <circle cx="20" cy="20" r="3" fill="blue" stroke="yellow" stroke-width="0.5"/>
-        <line x1="20" y1="20" x2="50" y2="50" stroke="green" stroke-width="1"/>
-        <text x="30" y="30" fill="white" font-size="3">TESTE</text>
-    </svg>
+    <!-- Teste com classes -->
+    <line class="edge" x1="20" y1="50" x2="28" y2="40"/>
+    <g class="node" transform="translate(20 50)">
+      <circle r="2.3"/>
+    </g>
+    <circle class="piece A" cx="30" cy="30" r="2.2"/>
+  </svg>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        // Teste dinâmico
-        const svg = $('#test-svg');
-        
-        // Adicionar círculo dinamicamente
-        svg.append('<circle cx="80" cy="80" r="4" fill="orange" stroke="black" stroke-width="0.5"/>');
-        
-        console.log('SVG elements:', svg.children().length);
-    </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    console.log('SVG element:', $('#boardSvg')[0]);
+    console.log('SVG children:', $('#boardSvg').children().length);
+    console.log('SVG HTML:', $('#boardSvg').html());
+    
+    // Teste dinâmico
+    setTimeout(() => {
+      console.log('Adicionando elemento dinamicamente...');
+      $('#boardSvg').append('<circle cx="50" cy="80" r="4" fill="orange" stroke="black" stroke-width="0.5"/>');
+      console.log('Novo total de children:', $('#boardSvg').children().length);
+    }, 2000);
+  </script>
 </body>
 </html>

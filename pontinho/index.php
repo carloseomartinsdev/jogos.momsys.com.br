@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pontinho Online (2–4 jogadores)</title>
+  <title>Pontinho Online</title>
+  <link rel="stylesheet" href="../common.css" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="../site.webmanifest">
   <link rel="icon" href="../images/icone.ico" type="image/x-icon">
@@ -16,10 +17,9 @@
 <body>
 <div class="app">
   <header class="topbar">
-    <h1>Pontinho Online</h1>
-    <a href="../" class="btn" style="margin-right: 10px;">← Voltar</a>
-
+    <h1>🔳 Pontinho Online</h1>
     <div class="controls">
+      <a href="../" class="btn">← Voltar</a>
       <label class="lbl">Tamanho:</label>
       <select id="gridSize" class="input">
         <option value="3x3">3 × 3</option>
@@ -72,6 +72,11 @@
       </div>
     </aside>
   </main>
+
+  <footer class="footer">
+    <span>© <?= date('Y') ?> • Seus Jogos</span>
+    <span>Um oferecimento Martins Soluções WEB • <a href="https://momsys.com.br/home" target="_blank">momsys.com.br/home</a></span>
+  </footer>
 </div>
 </body>
 </html>

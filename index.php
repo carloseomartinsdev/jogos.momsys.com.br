@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Jogos • Home</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css" />
   <link rel="manifest" href="site.webmanifest">
   <link rel="icon" href="images/icone.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <header class="topbar">
@@ -22,8 +22,7 @@
       <a class="link" href="./pontinho/">Pontinho</a>
       <a class="link" href="./batalhanaval/">Batalha Naval 1</a>
       <a class="link" href="./batalhanaval2/">Batalha Naval 2</a>
-      <a class="link" href="./ludoclassico/">Ludo Clássico</a>
-      <a class="link" href="./ludo2/">Ludo Novo</a>
+      <a class="link" href="./ludo2/">Ludo</a>
     </nav>
   </header>
 
@@ -53,7 +52,7 @@
         <span class="btn">Jogar</span>
       </a>
 
-      <a class="card" href="./batalhanaval1/">
+      <a class="card" href="./batalhanaval/">
         <div class="icon">🚢</div>
         <h3>Batalha Naval 1</h3>
         <p>Posicione seus navios e afunde a frota inimiga!</p>
@@ -67,17 +66,10 @@
         <span class="btn">Jogar</span>
       </a>
 
-      <a class="card" href="./ludoclassico/">
-        <div class="icon">🎲</div>
-        <h3>Ludo Clássico</h3>
-        <p>O tradicional jogo de tabuleiro para até 4 jogadores!</p>
-        <span class="btn">Jogar</span>
-      </a>
-
       <a class="card" href="./ludo2/">
         <div class="icon">🎯</div>
-        <h3>Ludo Novo</h3>
-        <p>Ludo com tabuleiro diferente e novas mecânicas!</p>
+        <h3>Ludo</h3>
+        <p>Jogo de tabuleiro com diferentes layouts e mecânicas!</p>
         <span class="btn">Jogar</span>
       </a>
     </section>

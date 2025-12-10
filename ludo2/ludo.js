@@ -53,33 +53,7 @@ $(function(){
     });
   });
 
-  // Debug: testar se elementos existem
-  console.log('Elementos encontrados:');
-  console.log('btnCriar:', $('#btnCriar').length);
-  console.log('btnEntrar:', $('#btnEntrar').length);
-  console.log('boardSvg:', $('#boardSvg').length);
-  console.log('log:', $('#log').length);
-  
-  // Teste forçado de desenho
-  function testDraw() {
-    console.log('Testando desenho forçado...');
-    console.log('SVG element:', $svg[0]);
-    $svg.empty();
-    $svg.append('<circle cx="50" cy="50" r="8" fill="#ff0000" stroke="#ffffff" stroke-width="2"/>');
-    $svg.append('<circle cx="20" cy="20" r="6" fill="#0000ff" stroke="#ffff00" stroke-width="2"/>');
-    $svg.append('<circle cx="80" cy="80" r="6" fill="#00ff00" stroke="#000000" stroke-width="2"/>');
-    $svg.append('<line x1="20" y1="20" x2="50" y2="50" stroke="#00ff00" stroke-width="3"/>');
-    $svg.append('<line x1="50" y1="50" x2="80" y2="80" stroke="#ffff00" stroke-width="3"/>');
-    $svg.append('<rect x="10" y="10" width="80" height="80" fill="none" stroke="#ffffff" stroke-width="1"/>');
-    console.log('Elementos SVG adicionados:', $svg.children().length);
-    console.log('HTML do SVG:', $svg.html());
-  }
-  
-  // Expor globalmente
-  window.testDraw = testDraw;
-  
-  // Executar teste após 2 segundos
-  setTimeout(testDraw, 2000);
+
 
   // ===== poll =====
   let pollTimer=null;
@@ -96,8 +70,11 @@ $(function(){
   }
 
   function enterGame(){
+    $('#menuSection').hide();
+    $('#gameSection').show();
     $txtRoom.text(room); deepLink();
-    if(pollTimer) clearTimeout(pollTimer); pollTimer=setTimeout(poll,300);
+    if(pollTimer) clearTimeout(pollTimer); 
+    pollTimer=setTimeout(poll,300);
     bindSVGHandlers();
     drawBoard();
   }
@@ -187,12 +164,7 @@ $(function(){
 
   // ===== desenho do grafo =====
   function drawBoard(){
-    console.log('drawBoard chamado', {board: !!board, state: !!state});
-    if(!board||!state) {
-      console.log('drawBoard: board ou state não disponível');
-      return;
-    }
-    console.log('Desenhando tabuleiro com', board.nodes?.length, 'nós');
+    if(!board||!state) return;
     $svg.empty();
     // edges
     for(const e of board.edges){
@@ -206,11 +178,28 @@ $(function(){
     for(const n of board.nodes){
       let cls='node';
       if(n.type==='segura') cls+=' safe';
-      if(n.type==='portal'||n.type==='ponte') cls+=' portal';
+      if(n.type==='portal'||n.type==='ponte') {
+        cls+=' portal';
+        if(n.portalType==='entrada') cls+=' portal-entrada';
+        else if(n.portalType==='saida') cls+=' portal-saida';
+        else if(n.portalType==='braco') cls+=' portal-braco';
+      }
       if(n.type==='inicio:A') cls+=' startA';
       if(n.type==='inicio:B') cls+=' startB';
       if(n.type==='inicio:C') cls+=' startC';
       if(n.type==='inicio:D') cls+=' startD';
+      if(n.type==='braco') cls+=' braco';
+      if(n.type==='home') {
+        // Detecta qual jogador pela ID do nó
+        if(n.id.startsWith('H_A')) cls+=' homeA';
+        else if(n.id.startsWith('H_B')) cls+=' homeB';
+        else if(n.id.startsWith('H_C')) cls+=' homeC';
+        else if(n.id.startsWith('H_D')) cls+=' homeD';
+      }
+      if(n.type==='meta:A') cls+=' metaA';
+      if(n.type==='meta:B') cls+=' metaB';
+      if(n.type==='meta:C') cls+=' metaC';
+      if(n.type==='meta:D') cls+=' metaD';
       $svg.append(svgNode(n,cls));
     }
 
@@ -250,19 +239,59 @@ $(function(){
     }
   }
 
-  function svgLine(x1,y1,x2,y2,cls){ return $(`<line class="${cls}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`); }
+  function svgLine(x1,y1,x2,y2,cls){ 
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('class', cls);
+    line.setAttribute('x1', x1);
+    line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2);
+    line.setAttribute('y2', y2);
+    return line;
+  }
   function svgNode(n,cls){
-    const g=$(`<g class="${cls}" transform="translate(${n.x} ${n.y})"/>`);
-    g.append(`<circle r="2.3"/>`);
-    if(n.label){ g.append(`<text y="1.2" text-anchor="middle">${n.label}</text>`); }
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', cls);
+    g.setAttribute('transform', `translate(${n.x} ${n.y})`);
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', '-2.5');
+    rect.setAttribute('y', '-2.5');
+    rect.setAttribute('width', '5');
+    rect.setAttribute('height', '5');
+    rect.setAttribute('rx', '0.5');
+    g.appendChild(rect);
+    if(n.label){
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('y', '1.2');
+      text.setAttribute('text-anchor', 'middle');
+      text.textContent = n.label;
+      g.appendChild(text);
+    }
     return g;
   }
   function svgDest(x,y,pieceIdx,toType,toId){
-    const g=$(`<g class="dest" transform="translate(${x} ${y})" data-piece="${pieceIdx}" data-to-type="${toType}" data-to="${toId}"/>`);
-    g.append(`<circle r="3.2"/>`);
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', 'dest');
+    g.setAttribute('transform', `translate(${x} ${y})`);
+    g.setAttribute('data-piece', pieceIdx);
+    g.setAttribute('data-to-type', toType);
+    g.setAttribute('data-to', toId);
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', '-3.5');
+    rect.setAttribute('y', '-3.5');
+    rect.setAttribute('width', '7');
+    rect.setAttribute('height', '7');
+    rect.setAttribute('rx', '1');
+    g.appendChild(rect);
     return g;
   }
-  function svgPiece(x,y,r,cls){ return $(`<circle class="piece ${cls}" cx="${x}" cy="${y}" r="${r}"/>`); }
+  function svgPiece(x,y,r,cls){ 
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('class', `piece ${cls}`);
+    circle.setAttribute('cx', x);
+    circle.setAttribute('cy', y);
+    circle.setAttribute('r', r);
+    return circle;
+  }
 
   // deep link
   (function(){

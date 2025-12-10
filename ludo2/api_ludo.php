@@ -130,11 +130,12 @@ function board_load($name){
 function new_state($boardName, $board, $maxp){
     $order = ['A','B','C','D'];
     $order = array_slice($order, 0, max(2, min(4, $maxp)));
-    $pieces=[]; $finished=[]; $finished_count=[];
+    $pieces=[]; $finished=[]; $finished_count=[]; $lap_completed=[];
     foreach(['A','B','C','D'] as $L){
         $pieces[$L]=[];
-        for($i=0;$i<4;$i++){ $pieces[$L][]=['pos'=>'BASE']; }
+        for($i=0;$i<4;$i++){ $pieces[$L][]=['pos'=>'BASE','laps'=>0]; }
         $finished[$L]=false; $finished_count[$L]=0;
+        $lap_completed[$L]=[];
     }
     return [
         'board_name'=>$boardName,
@@ -146,6 +147,7 @@ function new_state($boardName, $board, $maxp){
         'must_move'=>false,
         'legal'=>[],
         'pieces'=>$pieces,
+        'lap_completed'=>$lap_completed,
         'finished'=>$finished,
         'finished_count'=>$finished_count,
         'winner'=>null, 'finished_all'=>false,
@@ -196,7 +198,7 @@ function compute_legal($st, $board, $who){
             if($die == 6){
                 $entry = $board['homeEntrances'][$who] ?? null;
                 if($entry && can_land_on($st,$board,$who,$entry)){
-                    $legal[] = ['pieceIdx'=>$idx, 'toType'=>'START', 'toId'=>$entry, 'path'=>[$entry]];
+                    $legal[] = ['pieceIdx'=>$idx, 'toType'=>'START', 'toId'=>$entry, 'path'=>[$entry], 'isStart'=>true];
                 }
             }
             continue;
@@ -204,8 +206,34 @@ function compute_legal($st, $board, $who){
 
         // caminhar grafo
         $from = $p['pos'];
-        foreach(walk_targets($st,$board,$who,$from,$die) as $t){
-            $legal[] = $t + ['pieceIdx'=>$idx];
+        
+        // Se já está na reta final (home), verifica se pode avançar
+        $hp = $board['homePaths'][$who] ?? [];
+        $inHome = in_array($from, $hp);
+        
+        if($inHome){
+            // Está na reta final - só pode mover se não ultrapassar a META
+            $currentIdx = array_search($from, $hp);
+            if($currentIdx !== false){
+                $targetIdx = $currentIdx + $die;
+                if($targetIdx < count($hp)){
+                    // Pode avançar
+                    $dest = $hp[$targetIdx];
+                    if(can_land_on_home($st,$board,$who,$dest)){
+                        $legal[] = ['pieceIdx'=>$idx, 'toType'=>'HOME', 'toId'=>$dest, 'path'=>array_slice($hp, $currentIdx+1, $die)];
+                    }
+                } elseif($targetIdx === count($hp)){
+                    // Chegou exatamente na META
+                    $dest = $hp[count($hp)-1];
+                    $legal[] = ['pieceIdx'=>$idx, 'toType'=>'HOME', 'toId'=>$dest, 'path'=>array_slice($hp, $currentIdx+1, $die)];
+                }
+                // Se ultrapassar, não adiciona movimento (fica parado)
+            }
+        } else {
+            // Não está na reta final - movimento normal
+            foreach(walk_targets($st,$board,$who,$from,$die,$idx) as $t){
+                $legal[] = $t + ['pieceIdx'=>$idx];
+            }
         }
     }
     // dedup
@@ -214,53 +242,64 @@ function compute_legal($st, $board, $who){
     return $out;
 }
 
-function walk_targets($st,$board,$who,$from,$steps){
-    $out=[]; $visited=[]; $stack=[ ['at'=>$from,'left'=>$steps,'path'=>[]] ];
+function walk_targets($st,$board,$who,$from,$steps,$pieceIdx=null){
+    $out=[]; $visited=[]; $stack=[ ['at'=>$from,'left'=>$steps,'path'=>[],'stepsFromStart'=>0,'willCompleteLap'=>false] ];
+    
+    // Verifica se a peça já completou a volta
+    $lapCompleted = false;
+    if($pieceIdx !== null && isset($st['pieces'][$who][$pieceIdx])){
+        $lapCompleted = ($st['pieces'][$who][$pieceIdx]['laps'] ?? 0) >= 1;
+    }
+    
+    $entry = $board['homeEntrances'][$who] ?? null;
+    
     while($stack){
         $cur=array_pop($stack);
-        $at=$cur['at']; $left=$cur['left']; $path=$cur['path'];
-        $key=$at.'|'.$left; if(isset($visited[$key])) continue; $visited[$key]=1;
+        $at=$cur['at']; $left=$cur['left']; $path=$cur['path']; $stepsFromStart=$cur['stepsFromStart']; $willCompleteLap=$cur['willCompleteLap'];
+        $key=$at.'|'.$left.'|'.($willCompleteLap?'1':'0'); if(isset($visited[$key])) continue; $visited[$key]=1;
 
-        // entrada da home
-        $entry = $board['homeEntrances'][$who] ?? null;
-        if($at === $entry){
+        // Se chegou na entrada e não tinha completado volta, marca que vai completar
+        if($at === $entry && $stepsFromStart > 0 && !$lapCompleted && !$willCompleteLap){
+            $willCompleteLap = true;
+        }
+
+        // entrada da home - verifica se deve entrar
+        if($at === $entry && $stepsFromStart > 0 && ($lapCompleted || $willCompleteLap)){
             $hp = $board['homePaths'][$who] ?? [];
             if($hp){
-                $adv = min($left, count($hp));
-                if($adv > 0){
+                // DEVE entrar na reta final
+                if($left > 0 && $left <= count($hp)){
+                    $adv = $left;
                     $dest = $hp[$adv-1];
-                    if($adv == $left){
-                        if(can_land_on_home($st,$board,$who,$dest)){
-                            $out[] = ['toType'=>'HOME','toId'=>$dest,'path'=>array_merge($path, array_slice($hp,0,$adv))];
-                        }
-                    } else {
-                        $stack[] = ['at'=>$hp[$adv-1],'left'=>$left-$adv,'path'=>array_merge($path, array_slice($hp,0,$adv))];
+                    if(can_land_on_home($st,$board,$who,$dest)){
+                        $out[] = ['toType'=>'HOME','toId'=>$dest,'path'=>array_merge($path, array_slice($hp,0,$adv)),'willCompleteLap'=>$willCompleteLap];
                     }
                 }
-                // não segue edges normais a partir do entry
+                // NÃO continua no caminho circular
                 continue;
             }
         }
 
         if($left === 0){
-            if(can_land_on($st,$board,$who,$at)){
-                $out[] = ['toType'=>'NODE','toId'=>$at,'path'=>$path];
+            $node = $board['nodeMap'][$at] ?? null;
+            // Se parou exatamente no portal, DEVE entrar (não adiciona opção de ficar)
+            if($node && isset($node['to']) && $node['to']!==''){
+                $to=$node['to'];
+                $stack[]=['at'=>$to,'left'=>0,'path'=>array_merge($path,[$to]),'stepsFromStart'=>$stepsFromStart+1,'willCompleteLap'=>$willCompleteLap];
+            } else {
+                // Não é portal, pode parar aqui
+                if(can_land_on($st,$board,$who,$at)){
+                    $out[] = ['toType'=>'NODE','toId'=>$at,'path'=>$path];
+                }
             }
             continue;
         }
 
         $node = $board['nodeMap'][$at] ?? null; if(!$node) continue;
 
-        // portal (salto conta como 1 passo)
-        if(isset($node['to']) && $node['to']!==''){
-            $to=$node['to'];
-            $stack[]=['at'=>$to,'left'=>$left-1,'path'=>array_merge($path,[$to])];
-            continue;
-        }
-
         $edges = $node['edges'] ?? [];
         foreach($edges as $nx){
-            $stack[]=['at'=>$nx,'left'=>$left-1,'path'=>array_merge($path,[$nx])];
+            $stack[]=['at'=>$nx,'left'=>$left-1,'path'=>array_merge($path,[$nx]),'stepsFromStart'=>$stepsFromStart+1,'willCompleteLap'=>$willCompleteLap];
         }
     }
     // dedup destino
@@ -302,6 +341,7 @@ function pack_view($st,$me,$board){
             'must_move'=>$st['must_move'],
             'legal'=>$st['legal'],
             'pieces'=>$st['pieces'],
+            'lap_completed'=>$st['lap_completed'] ?? [],
             'finished'=>$st['finished'],
             'finished_count'=>$st['finished_count'],
             'winner'=>$st['winner'],
@@ -384,12 +424,33 @@ function action_roll($room,$token){
     if($st['finished_all']) return ['success'=>false,'error'=>'Jogo finalizado'];
     if($st['rolled'] && $st['must_move']) return ['success'=>false,'error'=>'Você precisa mover primeiro'];
 
-    $die = random_int(1,6);
+    // TESTE: Dado sempre 5 ou 6
+    $die = random_int(0,1) === 0 ? 5 : 6;
+    // $die = random_int(1,6); // Normal
     $st['last_die']=$die; $st['rolled']=true;
 
     $board = board_load($st['board_name']);
     $st['legal'] = compute_legal($st,$board,$me);
     $st['must_move'] = count($st['legal'])>0;
+    
+    // Se não tem movimentos válidos e não tirou 6, perde a vez
+    if(!$st['must_move'] && $die != 6){
+        // Verifica se todas as peças estão na base
+        $allInBase = true;
+        foreach($st['pieces'][$me] as $p){
+            if($p['pos'] !== 'BASE' && $p['pos'] !== 'META'){
+                $allInBase = false;
+                break;
+            }
+        }
+        if($allInBase){
+            // Passa a vez automaticamente
+            $st['rolled']=false;
+            $st['must_move']=false;
+            $st['legal']=[];
+            $st['turn'] = next_turn($st, $st['turn']);
+        }
+    }
 
     $st['version']++; $st['updated_at']=time();
     save_state($room,$st);
@@ -425,12 +486,42 @@ function action_move($room,$token,$pieceIdx,$toType,$toId){
                 foreach($occ as $o){
                     if($o['L'] !== $me){
                         $st['pieces'][$o['L']][$o['idx']]['pos']='BASE';
+                        $st['pieces'][$o['L']][$o['idx']]['laps']=0;
                         $capture=true;
                     }
                 }
             }
         }
+        
+        $oldPos = $st['pieces'][$me][$pieceIdx]['pos'];
+        $oldLaps = $st['pieces'][$me][$pieceIdx]['laps'] ?? 0;
         $st['pieces'][$me][$pieceIdx]['pos'] = $toId;
+        
+        // Se está saindo da base, não marca volta ainda
+        if($toType === 'START' && isset($mv['isStart'])){
+            $st['pieces'][$me][$pieceIdx]['laps'] = 0;
+        }
+        // Verifica se completou a volta
+        else {
+            $entry = $board['homeEntrances'][$me] ?? null;
+            // Marca volta quando:
+            // 1. Chega na entrada vindo de outra posição (não da base)
+            // 2. Ou quando o caminho (path) passa pela entrada
+            if($oldLaps === 0 && $entry){
+                // Verifica se chegou na entrada
+                if($toId === $entry && $oldPos !== 'BASE'){
+                    $st['pieces'][$me][$pieceIdx]['laps'] = 1;
+                }
+                // Verifica se o caminho passou pela entrada
+                elseif(isset($mv['path']) && in_array($entry, $mv['path'])){
+                    $st['pieces'][$me][$pieceIdx]['laps'] = 1;
+                }
+                // Verifica se o movimento vai completar a volta (flag do walk_targets)
+                elseif(isset($mv['willCompleteLap']) && $mv['willCompleteLap']){
+                    $st['pieces'][$me][$pieceIdx]['laps'] = 1;
+                }
+            }
+        }
     } elseif($toType==='HOME'){
         $hp = $board['homePaths'][$me] ?? [];
         $last = end($hp);

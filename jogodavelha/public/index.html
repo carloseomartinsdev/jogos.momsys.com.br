@@ -3,28 +3,30 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Jogo da Velha (PHP)</title>
+  <title>Jogo da Velha</title>
+  <link rel="stylesheet" href="../../common.css" />
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="../../site.webmanifest">
   <link rel="icon" href="../../images/icone.ico" type="image/x-icon">
 </head>
 <body>
-  <div class="app">
-    <a href="../../" style="display: inline-block; margin-bottom: 10px; padding: 5px 10px; background: #007cba; color: white; text-decoration: none; border-radius: 3px;">← Voltar</a>
-    <h1>Jogo da Velha (PHP)</h1>
-    <p class="muted">Multiplayer simples via PHP (polling HTTP). Sem Node/npm.</p>
-
+  <header class="topbar">
+    <h1>#️⃣ Jogo da Velha</h1>
     <div class="controls">
-      <button id="create">Criar sala</button>
-      <input id="roomCode" placeholder="Código da sala" />
-      <button id="join">Entrar</button>
+      <a href="../../" class="btn">← Voltar</a>
+      <button id="create" class="btn">Criar sala</button>
+      <input id="roomCode" class="input" placeholder="Código da sala" style="width:140px" />
+      <button id="join" class="btn">Entrar</button>
     </div>
+  </header>
 
-    <div class="status">
-      <div id="you">Você: -</div>
-      <div id="room">Sala: -</div>
-      <div id="turn">Vez: -</div>
-      <div id="winner"></div>
+  <div class="app">
+
+    <div class="score">
+      <span class="pill">Sala: <b id="room">-</b></span>
+      <span class="pill">Você: <b id="you">-</b></span>
+      <span class="pill">Vez: <b id="turn">-</b></span>
+      <span class="pill" id="winner"></span>
     </div>
 
     <div class="board" id="board">
@@ -40,10 +42,15 @@
     </div>
 
     <div class="bottom">
-      <button id="reset">Reiniciar</button>
+      <button id="reset" class="btn warn">Reiniciar</button>
       <div id="msg" class="msg"></div>
     </div>
   </div>
+
+  <footer class="footer">
+    <span>© <?= date('Y') ?> • Seus Jogos</span>
+    <span>Um oferecimento Martins Soluções WEB • <a href="https://momsys.com.br/home" target="_blank">momsys.com.br/home</a></span>
+  </footer>
 
   <script>
     // clientId persistente para identificar o jogador
