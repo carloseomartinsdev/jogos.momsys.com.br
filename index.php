@@ -23,6 +23,7 @@
       <a class="link" href="./batalhanaval/">Batalha Naval 1</a>
       <a class="link" href="./batalhanaval2/">Batalha Naval 2</a>
       <a class="link" href="./ludo2/">Ludo</a>
+      <a class="link" href="./bancoimobiliario-cidade/">Banco Imobiliário - Cidade</a>
     </nav>
   </header>
 
@@ -70,6 +71,13 @@
         <div class="icon">🎯</div>
         <h3>Ludo</h3>
         <p>Jogo de tabuleiro com diferentes layouts e mecânicas!</p>
+        <span class="btn">Jogar</span>
+      </a>
+
+      <a class="card" href="./bancoimobiliario-cidade/">
+        <div class="icon">🏙️</div>
+        <h3>Banco Imobiliário - Cidade</h3>
+        <p>Navegue pelas ruas da cidade com dados e compre imóveis!</p>
         <span class="btn">Jogar</span>
       </a>
     </section>

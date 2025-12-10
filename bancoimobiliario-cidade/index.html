@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Imobiliário - Cidade</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🏙️ Banco Imobiliário - Cidade</h1>
+    
+    <div class="setup-screen" id="setupScreen">
+      <div class="setup-panel">
+        <h2>Configurar Jogo Online</h2>
+        
+        <div class="form-group">
+          <label>Número de Jogadores:</label>
+          <select id="playerCount" class="input">
+            <option value="2">2 Jogadores</option>
+            <option value="3">3 Jogadores</option>
+            <option value="4">4 Jogadores</option>
+            <option value="5">5 Jogadores</option>
+            <option value="6">6 Jogadores</option>
+            <option value="7">7 Jogadores</option>
+            <option value="8">8 Jogadores</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Seu Nome:</label>
+          <input type="text" id="playerName" class="input" placeholder="Digite seu nome" maxlength="20">
+        </div>
+        
+        <div class="online-options">
+          <button id="createRoom" class="btn">Criar Sala</button>
+          <div class="join-room">
+            <input type="text" id="roomId" class="input" placeholder="Código da Sala" maxlength="6">
+            <button id="joinRoom" class="btn">Entrar na Sala</button>
+          </div>
+        </div>
+        
+        <div id="roomInfo" style="display: none;">
+          <h3>Sala: <span id="currentRoomId"></span></h3>
+          <div id="playersList"></div>
+          <button id="startOnlineGame" class="btn" style="display: none;">Iniciar Jogo</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="game-area" id="gameArea" style="display: none;">
+      <div class="city-grid" id="cityGrid"></div>
+      
+      <div class="controls">
+        <div class="session-info">
+          <h3>👤 Você é</h3>
+          <div id="sessionPlayer" style="font-size: 16px; font-weight: bold; color: #22c55e;">Jogador 1</div>
+        </div>
+        
+        <div class="turn-info">
+          <h3>🎯 Vez do Jogador</h3>
+          <div id="currentPlayerTurn" style="font-size: 18px; font-weight: bold; color: #3b82f6;">Jogador 1</div>
+        </div>
+        
+        <div class="dice-area">
+          <h3>Dados de Movimento</h3>
+          <div class="dice-container">
+            <div class="dice" id="moveDice1">🎲</div>
+            <div class="dice" id="moveDice2">🎲</div>
+          </div>
+          <button id="rollDice" class="btn">Rolar Dados</button>
+          <button id="passTurn" class="btn" style="background: #6b7280; margin-top: 10px;">Passar Vez</button>
+        </div>
+        
+        <div class="all-players-info">
+          <h3>Informações dos Jogadores</h3>
+          <div id="allPlayersData"></div>
+          <button id="showStatement" class="btn" style="margin-top: 10px;">Ver Extrato</button>
+          <button id="showProperties" class="btn" style="margin-top: 5px; background: #8b5cf6;">Minhas Propriedades</button>
+        </div>
+        
+        <div class="property-info" id="propertyInfo">
+          <h3>Propriedade Atual</h3>
+          <div id="propertyDetails">Selecione uma propriedade</div>
+          <button id="buyProperty" class="btn" style="display:none">Comprar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

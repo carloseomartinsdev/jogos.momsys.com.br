@@ -1,0 +1,1 @@
+{"id":"BCKGNV","players":[{"id":1,"name":"Carlos","joined":1765332034},{"id":2,"name":"Player 2","joined":1765332045}],"maxPlayers":4,"gameState":{"started":true,"currentPlayer":1,"totalPlayers":4,"players":[],"properties":[],"playerPosition":{"x":1,"y":0},"direction":"right"},"created":1765332034}
